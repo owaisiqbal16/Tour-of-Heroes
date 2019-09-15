@@ -64,6 +64,20 @@ app.post("/heroes", function (req, res) {
     })
 })
 
+app.put('/hero/:id', function (req, res) {
+    var hero = {
+        name: req.body.name,
+        id : req.body.id
+    };
+    if (!hero) {
+        return res.status(400).send({ error: user, message: 'Please provide user and user_id' });
+    }
+    dbConn.query("UPDATE heroes SET name = ? WHERE id = ?" , [hero.name,hero.id] , function (error, results, fields) {
+        if (error) throw error;
+        return res.send({ error: false, data: results, message: 'user has been updated successfully.' });
+    });
+});
+
 app.delete('/hero/:id', function (req, res) {
     var id = req.params.id;
     if (!id) {
@@ -74,6 +88,18 @@ app.delete('/hero/:id', function (req, res) {
         return res.send({ error: false, data: results, message: 'User has been deleted successfully.' });
     });
 });
+
+app.get("heroes/?name=:term", function (req, res) {
+    let term = req.params.id;
+    if (!term) {
+        return res.status(400).send({ error: true, message: 'Please provide Hero Id' });
+    }
+    dbConn.query('SELECT * FROM heroes where name=?', term, function (err, result) {
+        if (err) throw err;
+        return res.send(result[0]);
+    });
+});
+
 
 
 app.listen(3000, () => {

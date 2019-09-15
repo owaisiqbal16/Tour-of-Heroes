@@ -11,6 +11,10 @@ import { catchError, map, tap } from 'rxjs/operators';
 })
 export class HeroService {
 
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
+
   getHeroes(): Observable<Hero[]> {
     return this.http.get<Hero[]>('http://localhost:3000/heroes')
       .pipe(
@@ -36,14 +40,33 @@ export class HeroService {
     );
   }
 
+  updateHero(hero: Hero): Observable<any> {
+    const id = typeof hero === 'number' ? hero : hero.id;
+    return this.http.put( `http://localhost:3000/hero/${id}` , hero, this.httpOptions).pipe(
+      tap(_ => this.log(`updated hero id=${hero.id}`)),
+      catchError(this.handleError<any>('updateHero'))
+    );
+  }
+
   /** DELETE: delete the hero from the server */
   deleteHero(hero: Hero | number): Observable<Hero> {
     const id = typeof hero === 'number' ? hero : hero.id;
-    // const url = `http://localhost:3000/hero/${id}`;
 
     return this.http.delete<Hero>(`http://localhost:3000/hero/${id}` , this.httpOptions).pipe(
       tap(_ => this.log(`deleted hero id=${id}`)),
       catchError(this.handleError<Hero>('deleteHero'))
+    );
+  }
+
+   /* GET heroes whose name contains search term */
+   searchHeroes(term: string): Observable<Hero[]> {
+    if (!term.trim()) {
+      // if not search term, return empty hero array.
+      return of([]);
+    }
+    return this.http.get<Hero[]>(`http://localhost:3000/heroes/?name=${term}`).pipe(
+      tap(_ => this.log(`found heroes matching "${term}"`)),
+      catchError(this.handleError<Hero[]>('searchHeroes', []))
     );
   }
 
@@ -62,19 +85,13 @@ export class HeroService {
   //   );
   // }
 
-  
 
-
-  updateHero(hero: Hero): Observable<any> {
-    return this.http.put(this.heroesUrl, hero, this.httpOptions).pipe(
-      tap(_ => this.log(`updated hero id=${hero.id}`)),
-      catchError(this.handleError<any>('updateHero'))
-    );
-  }
-
-  httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  };
+  // updateHero(hero: Hero): Observable<any> {
+  //   return this.http.put(this.heroesUrl, hero, this.httpOptions).pipe(
+  //     tap(_ => this.log(`updated hero id=${hero.id}`)),
+  //     catchError(this.handleError<any>('updateHero'))
+  //   );
+  // }
 
 
   // deleteHero(hero: Hero | number): Observable<Hero> {
@@ -87,17 +104,17 @@ export class HeroService {
   //   );
   // }
 
-  /* GET heroes whose name contains search term */
-  searchHeroes(term: string): Observable<Hero[]> {
-    if (!term.trim()) {
-      // if not search term, return empty hero array.
-      return of([]);
-    }
-    return this.http.get<Hero[]>(`${this.heroesUrl}/?name=${term}`).pipe(
-      tap(_ => this.log(`found heroes matching "${term}"`)),
-      catchError(this.handleError<Hero[]>('searchHeroes', []))
-    );
-  }
+ 
+  // searchHeroes(term: string): Observable<Hero[]> {
+  //   if (!term.trim()) {
+  //     // if not search term, return empty hero array.
+  //     return of([]);
+  //   }
+  //   return this.http.get<Hero[]>(`${this.heroesUrl}/?name=${term}`).pipe(
+  //     tap(_ => this.log(`found heroes matching "${term}"`)),
+  //     catchError(this.handleError<Hero[]>('searchHeroes', []))
+  //   );
+  // }
 
   private heroesUrl = 'api/heroes';
 
