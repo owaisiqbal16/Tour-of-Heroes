@@ -13,8 +13,8 @@ var corsOptions = {
 var dbConn = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
-    database: 'tour_of_heroes1'
+    password: 'rootpasswordgiven',
+    database: 'tour_of_heroes'
 })
 
 dbConn.connect();
@@ -25,7 +25,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cors(corsOptions))
 
-
+//==========================================
+//HEROES ROUTES
+//==========================================
 app.get('/heroes', (req, res) => {
     dbConn.query("SELECT * from heroes", function (err, results) {
         if (err) {
@@ -100,6 +102,72 @@ app.get("heroes/?name=:term", function (req, res) {
     });
 });
 
+//=================================
+//POWERS ROUTES
+//=================================
+
+app.get('/powers', (req, res) => {
+    dbConn.query("SELECT * from powers", function (err, results) {
+        if (err) {
+            console.log("can't fetch powers")
+        }
+        else {
+            res.send(results)
+        }
+    })
+});
+
+app.get("/powers/:id", function (req, res) {
+    let power_id = req.params.id;
+    if (!power_id) {
+        return res.status(400).send({ error: true, message: 'Please provide Power Id' });
+    }
+    dbConn.query('SELECT * FROM powers where id=?', power_id, function (err, result) {
+        if (err) throw err;
+        return res.send(result[0]);
+    });
+});
+
+app.post("/powers", function (req, res) {
+    var power = {
+        name: req.body.name,
+        id : req.body.id
+    };
+    if (!power) {
+        return res.status(400).send({ error: true, message: 'please provide user' });
+    }
+    dbConn.query(`INSERT INTO powers (id,name) values('${power.id}','${power.name}')`, function (error, results) {
+        if (error) { throw err }
+        else {
+            return res.send({data : results , message: "Added new power successfully" });
+        }
+    })
+})
+
+app.put('/powers/:id', function (req, res) {
+    var power = {
+        name: req.body.name,
+        id : req.params.id
+    };
+    if (!power) {
+        return res.status(400).send({ error: true , message: 'Please provide power and power_id' });
+    }
+    dbConn.query("UPDATE powers SET name = ? WHERE id = ?" , [power.name,power.id] , function (error, results, fields) {
+        if (error) throw error;
+        return res.send({ error: false, data: results, message: 'power has been updated successfully.' });
+    });
+});
+
+app.delete('/powers/:id', function (req, res) {
+    var id = req.params.id;
+    if (!id) {
+        return res.status(400).send({ error: true, message: 'Please provide power_id' });
+    }
+    dbConn.query('DELETE FROM powers WHERE id = ?', [id], function (error, results, fields) {
+        if (error) throw error;
+        return res.send({ error: false, data: results, message: 'power has been deleted successfully.' });
+    });
+});
 
 
 app.listen(3000, () => {
