@@ -58,6 +58,21 @@ export class PowerService {
     );
   }
   
+  getHeroPowers(id: number): Observable<Power[]> {
+    const url = `http://localhost:3000/heropowers/${id}`;
+    return this.http.get<Power[]>(url).pipe(
+      tap(_ => this.log(`fetched power id=${id}`)),
+      catchError(this.handleError<Power[]>(`getPower id=${id}`))
+    );
+  }
+
+  addPowerToHero(data : any): Observable<any> {
+    let id = data.hero_id;
+    let power_id = data.power_id;
+    console.log(data)
+    return this.http.post<any>(`http://localhost:3000/heropowers/${id}`, power_id , this.httpOptions)
+  }
+
   private powersUrl = 'http://localhost:3000/powers';
 
   private log(message: string) {

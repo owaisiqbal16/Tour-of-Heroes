@@ -167,6 +167,26 @@ app.delete('/powers/:id', function (req, res) {
     });
 });
 
+//==================================
+app.get("/heropowers/:id", function (req, res) {
+    let hero_id = req.params.id;
+    dbConn.query('SELECT hp.id , h.name as hname , p.name FROM heroPowers hp, heroes h, powers p WHERE hp.hero_id = h.id AND hp.power_id = p.id AND h.id = ?', [hero_id] , function (err, result) {
+        if (err) throw err;
+        return res.send(result);
+    });
+});
+
+app.post('/heropowers/:id' , function(req,res){
+    let hero_id = req.params.id;
+    let power_id = req.body.power_id;
+    console.log("Hero id is " + hero_id)
+    console.log("Powe id is " + power_id)
+    dbConn.query(`INSERT INTO heroPowers (hero_id , power_id) values('${hero_id}','${power_id}')` , function(err , result ) {
+        if(err) throw err;
+        return res.send(result);
+    });
+})
+
 
 app.listen(3000, () => {
     console.log("server started");

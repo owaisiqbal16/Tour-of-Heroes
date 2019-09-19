@@ -7,7 +7,26 @@
             <input [(ngModel)]="hero.name" placeholder="name" />
         </label>
     </div>
-    <button (click)="goBack()">go back</button>
-    <button (click)="save()">save</button>
+    <button class="save" (click)="goBack()">go back</button>
+    <button class="save" (click)="save()">save</button>
+
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown button
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" *ngFor="let power of powers">
+            <span (click)="addPowerToHero(power)">{{power.name}}</span>
+          </a>
+        </div>
+      </div>
+      <ul class="heroes">
+        <li *ngFor="let heroPower of heroPowers">
+            <a>
+                {{heroPower.name}}
+            </a>
+            <button class="delete" title="delete hero" (click)="delete(hero)">x</button>
+        </li>
+      </ul>
 
 </div>
