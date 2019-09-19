@@ -52,14 +52,13 @@ app.get("/heroes/:id", function (req, res) {
 
 app.post("/heroes", function (req, res) {
     var hero = {
-        name: req.body.name,
-        id : req.body.id
+        name: req.body.name
     };
     if (!hero) {
         return res.status(400).send({ error: true, message: 'please provide user' });
     }
-    dbConn.query(`INSERT INTO heroes (id,name) values('${hero.id}','${hero.name}')`, function (error, results) {
-        if (error) { throw err }
+    dbConn.query(`INSERT INTO heroes (name) values('${hero.name}')`, function (error, results) {
+        if (error) { throw error }
         else {
             return res.send({data : results , message: "Added new user successfully" });
         }
@@ -130,13 +129,12 @@ app.get("/powers/:id", function (req, res) {
 
 app.post("/powers", function (req, res) {
     var power = {
-        name: req.body.name,
-        id : req.body.id
+        name: req.body.name
     };
     if (!power) {
         return res.status(400).send({ error: true, message: 'please provide user' });
     }
-    dbConn.query(`INSERT INTO powers (id,name) values('${power.id}','${power.name}')`, function (error, results) {
+    dbConn.query(`INSERT INTO powers (name) values('${power.name}')`, function (error, results) {
         if (error) { throw err }
         else {
             return res.send({data : results , message: "Added new power successfully" });
