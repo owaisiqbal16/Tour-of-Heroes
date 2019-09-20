@@ -168,6 +168,9 @@ app.delete('/powers/:id', function (req, res) {
 });
 
 //==================================
+//ADD DELETE POWER TO HERO ROUTES
+//==================================
+
 app.get("/heropowers/:id", function (req, res) {
     let hero_id = req.params.id;
     dbConn.query('SELECT hp.id , h.name as hname , p.name FROM heroPowers hp, heroes h, powers p WHERE hp.hero_id = h.id AND hp.power_id = p.id AND h.id = ?', [hero_id] , function (err, result) {
@@ -200,6 +203,132 @@ app.delete('/heropowers/:id' , function(req,res){
         return res.send({data : result , message : "Added power to hero"});
     });
 })
+
+//========================================
+//COSTUMES ROUTES
+//========================================
+
+app.get('/costumes', (req, res) => {
+    dbConn.query("SELECT * from costumes", function (err, results) {
+        if (err) {
+            console.log("can't fetch powers")
+        }
+        else {
+            res.send(results)
+        }
+    })
+});
+
+app.get("/costumes/:id", function (req, res) {
+    let costume_id = req.params.id;
+    dbConn.query('SELECT * FROM costumes where id=?', costume_id, function (err, result) {
+        if (err) throw err;
+        return res.send(result[0]);
+    });
+});
+
+app.post("/costumes", function (req, res) {
+    var costume = {
+        name: req.body.name
+    };
+    if (!costume) {
+        return res.status(400).send({ error: true, message: 'please provide costume' });
+    }
+    dbConn.query(`INSERT INTO costumes (name) values('${costume.name}')`, function (error, results) {
+        if (error) { throw err }
+        else {
+            return res.send({data : results , message: "Added new costume successfully" });
+        }
+    })
+})
+
+app.put('/costumes/:id', function (req, res) {
+    var costume = {
+        name: req.body.name,
+        id : req.params.id
+    };
+    if (!costume) {
+        return res.status(400).send({ error: true , message: 'Please provide costume and costume_id' });
+    }
+    dbConn.query("UPDATE costumes SET name = ? WHERE id = ?" , [costume.name,costume.id] , function (error, results, fields) {
+        if (error) throw error;
+        return res.send({ error: false, data: results, message: 'costume has been updated successfully.' });
+    });
+});
+
+app.delete('/costumes/:id', function (req, res) {
+    var id = req.params.id;
+    if (!id) {
+        return res.status(400).send({ error: true, message: 'Please provide power_id' });
+    }
+    dbConn.query('DELETE FROM costumes WHERE id = ?', [id], function (error, results, fields) {
+        if (error) throw error;
+        return res.send({ error: false, data: results, message: 'costume has been deleted successfully.' });
+    });
+});
+
+//==============================
+//CITY ROUTES
+//==============================
+
+app.get('/cities', (req, res) => {
+    dbConn.query("SELECT * from cities", function (err, results) {
+        if (err) {
+            console.log("can't fetch cities")
+        }
+        else {
+            res.send(results)
+        }
+    })
+});
+
+app.get("/cities/:id", function (req, res) {
+    let city_id = req.params.id;
+    dbConn.query('SELECT * FROM cities where id=?', city_id, function (err, result) {
+        if (err) throw err;
+        return res.send(result[0]);
+    });
+});
+
+app.post("/cities", function (req, res) {
+    var city = {
+        name: req.body.name
+    };
+    if (!city) {
+        return res.status(400).send({ error: true, message: 'please provide city' });
+    }
+    dbConn.query(`INSERT INTO cities (name) values('${city.name}')`, function (error, results) {
+        if (error) { throw err }
+        else {
+            return res.send({data : results , message: "Added new city successfully" });
+        }
+    })
+})
+
+app.put('/cities/:id', function (req, res) {
+    var city = {
+        name: req.body.name,
+        id : req.params.id
+    };
+    if (!city) {
+        return res.status(400).send({ error: true , message: 'Please provide city name and city id' });
+    }
+    dbConn.query("UPDATE cities SET name = ? WHERE id = ?" , [city.name,city.id] , function (error, results, fields) {
+        if (error) throw error;
+        return res.send({ error: false, data: results, message: 'city has been updated successfully.' });
+    });
+});
+
+app.delete('/cities/:id', function (req, res) {
+    var id = req.params.id;
+    if (!id) {
+        return res.status(400).send({ error: true, message: 'Please provide city_id' });
+    }
+    dbConn.query('DELETE FROM cities WHERE id = ?', [id], function (error, results, fields) {
+        if (error) throw error;
+        return res.send({ error: false, data: results, message: 'city has been deleted successfully.' });
+    });
+});
 
 
 app.listen(3000, () => {
