@@ -4,7 +4,7 @@ import { Observable , of } from 'rxjs';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
-
+import {heroPower} from './heroPower';
 
 @Injectable({
   providedIn: 'root'
@@ -66,11 +66,29 @@ export class PowerService {
     );
   }
 
-  addPowerToHero(data : any): Observable<any> {
-    let id = data.hero_id;
-    let power_id = data.power_id;
+  // addPower(power: Power): Observable<Power> {
+  //   return this.http.post<Power>('http://localhost:3000/powers', power, this.httpOptions)
+  //     .pipe(
+  //     tap((newPower: Power) => this.log(`added power w/ id=${newPower.id}`)),
+  //     catchError(this.handleError<Power>('addPower'))
+  //   );
+  // }
+
+  addPowerToHero(data : heroPower): Observable<heroPower> {
+    let hid = data.hero_id;
+    let pid = data.power_id;
     console.log(data)
-    return this.http.post<any>(`http://localhost:3000/heropowers/${id}`, power_id , this.httpOptions)
+    return this.http.post<any>(`http://localhost:3000/heropowers/${hid}/${pid}`, this.httpOptions).pipe(
+      tap(_ => this.log(`added power to hero id=${hid}`)),
+      catchError(this.handleError<any>(`addPowerToHero id=${hid}`))
+    );
+  }
+
+  deletePowerFromHero(id : number): Observable<any> {
+    return this.http.delete<any>(`http://localhost:3000/heropowers/${id}`, this.httpOptions).pipe(
+      tap(_ => this.log(`deleted power from hero id=${id}`)),
+      catchError(this.handleError<any>(`deletePowerFromHero id=${id}`))
+    );
   }
 
   private powersUrl = 'http://localhost:3000/powers';

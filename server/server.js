@@ -176,14 +176,28 @@ app.get("/heropowers/:id", function (req, res) {
     });
 });
 
-app.post('/heropowers/:id' , function(req,res){
-    let hero_id = req.params.id;
-    let power_id = req.body.power_id;
-    console.log("Hero id is " + hero_id)
-    console.log("Powe id is " + power_id)
-    dbConn.query(`INSERT INTO heroPowers (hero_id , power_id) values('${hero_id}','${power_id}')` , function(err , result ) {
-        if(err) throw err;
-        return res.send(result);
+app.post('/heropowers/:hid/:pid' , function(req,res){
+    var heroPower = {
+        hero_id : req.params.hid,
+        power_id : req.params.pid
+    };
+    if (!heroPower) {
+        return res.status(400).send({ error: true, message: 'please provide power' });
+    }
+    dbConn.query(`INSERT INTO heroPowers (hero_id , power_id) values('${heroPower.hero_id}','${heroPower.power_id}')` , function(error , result ) {
+        if(error) throw err;
+        return res.send({data : result , message : "Added power to hero"});
+    });
+})
+
+app.delete('/heropowers/:id' , function(req,res){
+    var id = req.params.id
+    if (!id) {
+        return res.status(400).send({ error: true, message: 'please provide power' });
+    }
+    dbConn.query("DELETE from heroPowers where id = ?" , [id] , function(error , result ) {
+        if(error) throw err;
+        return res.send({data : result , message : "Added power to hero"});
     });
 })
 

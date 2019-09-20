@@ -5,6 +5,7 @@ import { Location } from '@angular/common';
 import { HeroService } from '../hero.service';
 import {PowerService} from '../power.service';
 import {Power} from '../power';
+import {heroPower} from '../heroPower';
 
 
 @Component({
@@ -17,6 +18,7 @@ export class HeroDetailComponent implements OnInit {
   @Input() hero: Hero;
   powers: Power[];
   heroPowers : Power[];
+  heroPower : heroPower;
 
   getHero(): void {
     const id = +this.route.snapshot.paramMap.get('id');
@@ -35,28 +37,40 @@ export class HeroDetailComponent implements OnInit {
       .subscribe(heroPowers => this.heroPowers = heroPowers);
   }
 
-  addPowerToHero(power: Power): void {
+  addPowerToHero( power : Power): void {
     console.log("clicked in add power func")
     const id = +this.route.snapshot.paramMap.get('id');
-    const data = {
+    const data : heroPower = {
       power_id : power.id,
       hero_id : id
     }
     // console.log("Hero id is " + id);
     // console.log("Power id is " + power.id)
-    if (!power) { 
+    if (!data) { 
       console.log("no power given")
       return; }
     this.powerService.addPowerToHero(data)
-      .subscribe(power => {
+      .subscribe( power => {
         console.log("power is" + power)
-        // this.powers.push(power);
-        // this.heroPowers.push(power)
-        // this.getPowers();
-        // this.getHeroPowers();
+        this.getPowers();
+        this.getHeroPowers();
       });
   }
   
+  deletePowerFromHero( heroPower : any): void {
+    console.log(heroPower)
+    // const id = +this.route.snapshot.paramMap.get('id');
+    if (!heroPower) { 
+      console.log("no power given to delete")
+      return; }
+    this.powerService.deletePowerFromHero(heroPower.id)
+      .subscribe( heroPower => {
+        console.log("power is" + heroPower)
+        this.getPowers();
+        this.getHeroPowers();
+      });
+  }
+
   save(): void {
     this.heroService.updateHero(this.hero)
       .subscribe(() => this.goBack());
