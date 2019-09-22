@@ -267,6 +267,40 @@ app.delete('/costumes/:id', function (req, res) {
     });
 });
 
+//ADD DELETE COSTUMES FROM HEROES
+
+//SHOW COSTUME OF HERO
+app.get("/herocostumes/:id", function (req, res) {
+    let hero_id = req.params.id;
+    dbConn.query('SELECT heroes.costume_id , costumes.name FROM heroes, costumes WHERE heroes.costume_id = costumes.id AND heroes.id = ?', [hero_id] , function (err, result) {
+        if (err) throw err;
+    return res.send(result);
+});
+});
+
+//ADD/UPDATE COSTUME TO HERO
+app.put("/herocostumes/:hid/:cid", function (req, res) {
+    let hero_id = req.params.hid;
+    let costume_id = req.params.cid;
+    dbConn.query("UPDATE heroes SET costume_id = ? WHERE id = ?" , [costume_id,hero_id] , function (err, result) {
+        if (err) throw err;
+    return res.send(result);
+});
+});
+
+//REMOVE COSTUME FROM HERO
+app.put('/herocostumes/:id' , function(req,res){
+    var hero_id = req.params.id
+    if (!hero_id) {
+        return res.status(400).send({ error: true, message: 'please provide power' });
+    }
+    dbConn.query("UPDATE heroes SET costume_id = NULL WHERE id = ?" , [hero_id] , function(error , result ) {
+        if(error) throw error;
+        return res.send({data : result , message : "Added power to hero"});
+    });
+})
+
+
 //==============================
 //CITY ROUTES
 //==============================
