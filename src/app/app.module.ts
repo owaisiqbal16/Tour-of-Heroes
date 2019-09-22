@@ -11,6 +11,8 @@ import { MessagesComponent } from './messages/messages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HeroSearchComponent } from './hero-search/hero-search.component';
 import { PowersComponent } from './powers/powers.component';
+import { CitiesComponent } from './cities/cities.component';
+import { CostumesComponent } from './costumes/costumes.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { PowersComponent } from './powers/powers.component';
     MessagesComponent,
     DashboardComponent,
     HeroSearchComponent,
-    PowersComponent
+    PowersComponent,
+    CitiesComponent,
+    CostumesComponent
   ],
   imports: [
     BrowserModule,
