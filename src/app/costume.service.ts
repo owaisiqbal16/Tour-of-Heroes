@@ -54,6 +54,17 @@ export class CostumeService {
       catchError(this.handleError<Costume>('deleteCostume'))
     );
   }
+
+  getHeroCostume(id: number): Observable<Costume[]> {
+    const url = `http://localhost:3000/herocostumes/${id}`;
+    return this.http.get<Costume[]>(url).pipe(
+      tap(_ => this.log(`fetched costume id=${id}`)),
+      catchError(this.handleError<Costume[]>(`getCostume id=${id}`))
+    );
+  }
+
+
+
   private powersUrl = 'http://localhost:3000/costumes';
 
   private log(message: string) {

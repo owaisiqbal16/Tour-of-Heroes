@@ -10,9 +10,10 @@
     <button class="save" (click)="goBack()">go back</button>
     <button class="save" (click)="save()">save</button>
 
+    <!-- Power -->
     <div class="dropdown">
         <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown button
+          Add Power
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <a class="dropdown-item" *ngFor="let power of powers">
@@ -26,6 +27,26 @@
                 {{heroPower.name}}
             </a>
             <button class="delete" title="delete hero" (click)="deletePowerFromHero(heroPower)">x</button>
+        </li>
+      </ul>
+
+      <!-- Costumes -->
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Change Costume
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" *ngFor="let costume of costumes">
+            <span (click)="addCostumeToHero(costume)">{{costume.name}}</span>
+          </a>
+        </div>
+      </div>
+      <ul class="heroes">
+        <li *ngFor="let hc of heroCostume">
+            <a>
+                {{hc.name}}
+            </a>
+            <button class="delete" title="delete costume" (click)="deleteCostumeFromHero(hc)">x</button>
         </li>
       </ul>
 

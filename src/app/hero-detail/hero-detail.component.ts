@@ -4,8 +4,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { HeroService } from '../hero.service';
 import {PowerService} from '../power.service';
+import {CostumeService} from '../costume.service';
 import {Power} from '../power';
 import {heroPower} from '../heroPower';
+import {Costume} from '../costume';
 
 
 @Component({
@@ -19,6 +21,8 @@ export class HeroDetailComponent implements OnInit {
   powers: Power[];
   heroPowers : Power[];
   heroPower : heroPower;
+  costumes : Costume[];
+  heroCostume : any;
 
   getHero(): void {
     const id = +this.route.snapshot.paramMap.get('id');
@@ -76,10 +80,22 @@ export class HeroDetailComponent implements OnInit {
       .subscribe(() => this.goBack());
   }
 
+  getCostumes(): void {
+    this.costumeService.getCostumes()
+      .subscribe(costumes => this.costumes = costumes);
+  }
+
+  getHeroCostume() : void {
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.costumeService.getHeroCostume(id)
+      .subscribe(heroCostume => this.heroCostume = heroCostume);
+  }
+
   constructor(
     private route: ActivatedRoute,
     private heroService: HeroService,
     private powerService : PowerService,
+    private costumeService : CostumeService,
     private location: Location
   ) { }
 
@@ -87,6 +103,7 @@ export class HeroDetailComponent implements OnInit {
     this.getHero();
     this.getPowers();
     this.getHeroPowers();
+    this.getCostumes();
   }
 
   goBack(): void {
