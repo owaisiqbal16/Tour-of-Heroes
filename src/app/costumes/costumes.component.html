@@ -1,1 +1,20 @@
-<p>costumes works!</p>
+<h2>Costumes</h2>
+
+<div>
+    <label>Costume Name:
+        <input #costumeName />
+    </label>
+    <!-- (click) passes input value to add() and then clears the input -->
+    <button (click)="add(costumeName.value); costumeName.value=''">
+        add
+    </button>
+</div>
+
+<ul class="costumes">
+    <li *ngFor="let costume of costumes">
+        <a>
+            <span class="badge">{{costume.id}}</span> {{costume.name}}
+        </a>
+        <button class="delete" title="delete costume" (click)="delete(costume)">x</button>
+    </li>
+</ul>

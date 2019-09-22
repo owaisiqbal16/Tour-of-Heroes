@@ -1,1 +1,20 @@
-<p>cities works!</p>
+<h2>Cities</h2>
+
+<div>
+    <label>City Name:
+        <input #cityName />
+    </label>
+    <!-- (click) passes input value to add() and then clears the input -->
+    <button (click)="add(cityName.value); cityName.value=''">
+        add
+    </button>
+</div>
+
+<ul class="cities">
+    <li *ngFor="let city of cities">
+        <a>
+            <span class="badge">{{city.id}}</span> {{city.name}}
+        </a>
+        <button class="delete" title="delete city" (click)="delete(city)">x</button>
+    </li>
+</ul>

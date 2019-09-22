@@ -54,10 +54,10 @@ export class CostumeService {
       catchError(this.handleError<Costume>('deleteCostume'))
     );
   }
-  private powersUrl = 'http://localhost:3000/powers';
+  private powersUrl = 'http://localhost:3000/costumes';
 
   private log(message: string) {
-    this.messageService.add(`PowerService: ${message}`);
+    this.messageService.add(`CostumeService: ${message}`);
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
