@@ -63,6 +63,23 @@ export class CostumeService {
     );
   }
 
+  addCostumeToHero(data) : Observable<any> {
+    let hid = data.hero_id
+    let cid = data.costume_id
+    return this.http.put<any>(`http://localhost:3000/herocostumes/${hid}/${cid}`, this.httpOptions).pipe(
+      tap(_ => this.log(`added costume to hero id=${hid}`)),
+      catchError(this.handleError<any>(`addCostumeToHero id=${hid}`))
+    );
+  }
+
+  deleteCostumeFromHero(id: number): Observable<any> {
+    const url = `http://localhost:3000/herocostumes/${id}`;
+    return this.http.put(url , {} , this.httpOptions).pipe(
+      tap(_ => this.log(`fetched costume id=${id}`)),
+      catchError(this.handleError<any>(`getCostume id=${id}`))
+    );
+  }
+
 
 
   private powersUrl = 'http://localhost:3000/costumes';

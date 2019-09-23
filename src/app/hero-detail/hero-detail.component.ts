@@ -22,7 +22,7 @@ export class HeroDetailComponent implements OnInit {
   heroPowers : Power[];
   heroPower : heroPower;
   costumes : Costume[];
-  heroCostume : any;
+  heroCostume : Costume[];
 
   getHero(): void {
     const id = +this.route.snapshot.paramMap.get('id');
@@ -91,6 +91,29 @@ export class HeroDetailComponent implements OnInit {
       .subscribe(heroCostume => this.heroCostume = heroCostume);
   }
 
+  addCostumeToHero(costume : Costume) : void {
+    console.log("clicked in add costume func")
+    const id = +this.route.snapshot.paramMap.get('id');
+    const data = {
+      costume_id : costume.id,
+      hero_id : id
+    }
+    if (!data) { 
+      console.log("no costume given")
+      return; }
+    this.costumeService.addCostumeToHero(data)
+      .subscribe( costume => {
+        this.getCostumes();
+        this.getHeroCostume();
+      });
+  }
+
+  deleteCostumeFromHero() : void {
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.costumeService.deleteCostumeFromHero(id)
+      .subscribe(() => this.getHeroCostume());
+  }
+
   constructor(
     private route: ActivatedRoute,
     private heroService: HeroService,
@@ -104,6 +127,7 @@ export class HeroDetailComponent implements OnInit {
     this.getPowers();
     this.getHeroPowers();
     this.getCostumes();
+    this.getHeroCostume();
   }
 
   goBack(): void {
