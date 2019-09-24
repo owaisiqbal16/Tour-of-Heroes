@@ -5,9 +5,11 @@ import { Location } from '@angular/common';
 import { HeroService } from '../hero.service';
 import {PowerService} from '../power.service';
 import {CostumeService} from '../costume.service';
+import {CityService} from '../city.service';
 import {Power} from '../power';
 import {heroPower} from '../heroPower';
 import {Costume} from '../costume';
+import { City } from '../city';
 
 
 @Component({
@@ -21,8 +23,48 @@ export class HeroDetailComponent implements OnInit {
   powers: Power[];
   heroPowers : Power[];
   heroPower : heroPower;
+  filteredPowers : Power[];
   costumes : Costume[];
+  filteredCostumes : Costume[];
   heroCostume : Costume[];
+  cities : City[];
+  heroCity : City;
+
+  filterPower() : void {
+    this.filteredPowers = [];
+    console.log(this.powers)
+    console.log(this.heroPowers);
+    for(var i = 0 ; i < this.powers.length ; i++) 
+    {
+      for(var j =0 ; j< this.heroPowers.length ; j++)
+      {
+        if(this.powers[i].name == this.heroPowers[j].name)
+          break;
+      }
+      if(j == this.heroPowers.length)
+      {
+        this.filteredPowers.push(this.powers[i]);
+      }
+    }
+    this.filteredPowers.forEach(lol => {
+      console.log(lol)
+    })
+  }
+
+  filterCostumes() : void {
+    this.filteredCostumes = [];
+    // console.log(this.powers)
+    // console.log(this.heroPowers);
+    for(var i = 0 ; i < this.costumes.length ; i++)
+    if(this.heroCostume[0]) 
+    {
+      if(this.costumes[i].name !== this.heroCostume[0].name)
+        this.filteredCostumes.push(this.costumes[i]);
+    }
+    else{
+      this.filteredCostumes = this.costumes;
+    }
+  }
 
   getHero(): void {
     const id = +this.route.snapshot.paramMap.get('id');
@@ -32,13 +74,20 @@ export class HeroDetailComponent implements OnInit {
 
   getPowers(): void {
     this.powerService.getPowers()
-      .subscribe(powers => this.powers = powers);
+      .subscribe(powers => {
+        this.powers = powers
+        // this.filterPower()
+      });
+      
   }
 
   getHeroPowers() : void {
     const id = +this.route.snapshot.paramMap.get('id');
     this.powerService.getHeroPowers(id)
-      .subscribe(heroPowers => this.heroPowers = heroPowers);
+      .subscribe(heroPowers => {
+        this.heroPowers = heroPowers
+        this.filterPower()
+      });
   }
 
   addPowerToHero( power : Power): void {
@@ -80,6 +129,39 @@ export class HeroDetailComponent implements OnInit {
       .subscribe(() => this.goBack());
   }
 
+  getCities(): void {
+    this.cityService.getCities()
+      .subscribe(cities => this.cities = cities);
+  }
+
+  getHeroCity() : void {
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.cityService.getHeroCity(id)
+      .subscribe(heroCity => this.heroCity = heroCity);
+  }
+
+  addCityToHero(city : City) : void {
+    console.log("clicked in add city func")
+    const id = +this.route.snapshot.paramMap.get('id');
+    const data = {
+      city_id : city.id,
+      hero_id : id
+    }
+    if (!data) { 
+      console.log("no city given")
+      return; }
+    this.cityService.addCityToHero(data)
+      .subscribe( costume => {
+        this.getHeroCity();
+      });
+  }
+
+  deleteCityFromHero() : void {
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.cityService.deleteCityFromHero(id)
+      .subscribe(() => this.getHeroCity());
+  }
+
   getCostumes(): void {
     this.costumeService.getCostumes()
       .subscribe(costumes => this.costumes = costumes);
@@ -88,7 +170,10 @@ export class HeroDetailComponent implements OnInit {
   getHeroCostume() : void {
     const id = +this.route.snapshot.paramMap.get('id');
     this.costumeService.getHeroCostume(id)
-      .subscribe(heroCostume => this.heroCostume = heroCostume);
+      .subscribe(heroCostume => {
+        this.heroCostume = heroCostume
+        this.filterCostumes();
+      });
   }
 
   addCostumeToHero(costume : Costume) : void {
@@ -119,6 +204,7 @@ export class HeroDetailComponent implements OnInit {
     private heroService: HeroService,
     private powerService : PowerService,
     private costumeService : CostumeService,
+    private cityService : CityService,
     private location: Location
   ) { }
 
@@ -128,6 +214,8 @@ export class HeroDetailComponent implements OnInit {
     this.getHeroPowers();
     this.getCostumes();
     this.getHeroCostume();
+    this.getCities();
+    this.getHeroCity();
   }
 
   goBack(): void {

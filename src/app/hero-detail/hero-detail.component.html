@@ -16,7 +16,7 @@
           Add Power
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" *ngFor="let power of powers">
+          <a class="dropdown-item" *ngFor="let power of filteredPowers">
             <span (click)="addPowerToHero(power)">{{power.name}}</span>
           </a>
         </div>
@@ -36,7 +36,7 @@
           Change Costume
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" *ngFor="let costume of costumes">
+          <a class="dropdown-item" *ngFor="let costume of filteredCostumes">
             <span (click)="addCostumeToHero(costume)">{{costume.name}}</span>
           </a>
         </div>
@@ -47,6 +47,26 @@
                 {{hc.name}}
             </a>
             <button class="delete" title="delete costume" (click)="deleteCostumeFromHero()">x</button>
+        </li>
+      </ul>
+
+      <!-- Cities -->
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Change City
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" *ngFor="let city of cities">
+            <span (click)="addCityToHero(city)">{{city.name}}</span>
+          </a>
+        </div>
+      </div>
+      <ul class="heroes" *ngIf="heroCity">
+        <li>
+            <a>
+                {{heroCity.name}}
+            </a>
+            <button class="delete" title="delete city" (click)="deleteCityFromHero()">x</button>
         </li>
       </ul>
 

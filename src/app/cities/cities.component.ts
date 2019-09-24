@@ -34,7 +34,7 @@ export class CitiesComponent implements OnInit {
 
   delete(city: City): void {
     this.cities = this.cities.filter(h => h !== city);
-    this.cityService.deleteCostume(city).subscribe();
+    this.cityService.deleteCity(city).subscribe();
   }
 
 }

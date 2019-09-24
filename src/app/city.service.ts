@@ -38,7 +38,7 @@ export class CityService {
     );
   }
 
-  updateCostume(city: City): Observable<any> {
+  updateCity(city: City): Observable<any> {
     const id = typeof city === 'number' ? city : city.id;
     return this.http.put( `http://localhost:3000/cities/${id}` , city, this.httpOptions).pipe(
       tap(_ => this.log(`updated city id=${city.id}`)),
@@ -46,7 +46,7 @@ export class CityService {
     );
   }
 
-  deleteCostume(city: City | number): Observable<City> {
+  deleteCity(city: City | number): Observable<City> {
     const id = typeof city === 'number' ? city : city.id;
 
     return this.http.delete<City>(`http://localhost:3000/cities/${id}` , this.httpOptions).pipe(
@@ -54,6 +54,34 @@ export class CityService {
       catchError(this.handleError<City>('deleteCity'))
     );
   }
+
+  getHeroCity(id: number): Observable<City> {
+    return this.http.get<City>(`http://localhost:3000/herocity/${id}`).pipe(
+      tap(_ => this.log(`fetched costume id=${id}`)),
+      catchError(this.handleError<City>(`getCostume id=${id}`))
+    );
+  }
+
+  addCityToHero(data) : Observable<any> {
+    let hid = data.hero_id
+    let cid = data.city_id
+    return this.http.put<any>(`http://localhost:3000/herocity/${hid}/${cid}`, this.httpOptions).pipe(
+      tap(_ => this.log(`added city to hero id=${hid}`)),
+      catchError(this.handleError<any>(`addCityToHero id=${hid}`))
+    );
+  }
+
+  deleteCityFromHero(id: number): Observable<any> {
+    const url = `http://localhost:3000/herocity/${id}`;
+    return this.http.put(url , {} , this.httpOptions).pipe(
+      tap(_ => this.log(`fetched city id=${id}`)),
+      catchError(this.handleError<any>(`getCity id=${id}`))
+    );
+  }
+
+
+
+
   private powersUrl = 'http://localhost:3000/cities';
 
   private log(message: string) {

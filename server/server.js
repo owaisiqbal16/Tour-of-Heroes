@@ -84,9 +84,12 @@ app.delete('/hero/:id', function (req, res) {
     if (!id) {
         return res.status(400).send({ error: true, message: 'Please provide user_id' });
     }
-    dbConn.query('DELETE FROM heroes WHERE id = ?', [id], function (error, results, fields) {
-        if (error) throw error;
-        return res.send({ error: false, data: results, message: 'User has been deleted successfully.' });
+    dbConn.query("DELETE FROM heroPowers WHERE hero_id = ?" , [id] , function(error , result ) {
+        if(error) throw error;
+        dbConn.query('DELETE FROM heroes WHERE id = ?', [id], function (error, results, fields) {
+            if (error) throw error;
+            return res.send({ message: 'User has been deleted successfully.' });
+        });
     });
 });
 
@@ -261,9 +264,12 @@ app.delete('/costumes/:id', function (req, res) {
     if (!id) {
         return res.status(400).send({ error: true, message: 'Please provide power_id' });
     }
-    dbConn.query('DELETE FROM costumes WHERE id = ?', [id], function (error, results, fields) {
-        if (error) throw error;
-        return res.send({ error: false, data: results, message: 'costume has been deleted successfully.' });
+    dbConn.query("UPDATE heroes SET costume_id = NULL WHERE costume_id = ?" , [id] , function(error , result ) {
+        if(error) throw error;
+        dbConn.query('DELETE FROM costumes WHERE id = ?', [id], function (error, results, fields) {
+            if (error) throw error;
+            return res.send({ message: 'costume has been deleted successfully.' });
+        });
     });
 });
 
@@ -358,11 +364,50 @@ app.delete('/cities/:id', function (req, res) {
     if (!id) {
         return res.status(400).send({ error: true, message: 'Please provide city_id' });
     }
-    dbConn.query('DELETE FROM cities WHERE id = ?', [id], function (error, results, fields) {
-        if (error) throw error;
-        return res.send({ error: false, data: results, message: 'city has been deleted successfully.' });
+    dbConn.query("UPDATE heroes SET city_id = NULL WHERE city_id = ?" , [id] , function(error , result ) {
+        if(error) throw error;
+        dbConn.query('DELETE FROM cities WHERE id = ?', [id], function (error, results, fields) {
+            if (error) throw error;
+            return res.send({ error: false, data: results, message: 'city has been deleted successfully.' });
+        });
+        return res.send({message : "removed city from hero"});
     });
+    
 });
+
+//ADD DELETE CITIES FROM HEROES
+
+//SHOW CITY OF HERO
+app.get("/herocity/:id", function (req, res) {
+    let hero_id = req.params.id;
+    dbConn.query('SELECT heroes.city_id , cities.name FROM heroes, cities WHERE heroes.city_id = cities.id AND heroes.id = ?', [hero_id] , function (err, result) {
+        if (err) throw err;
+    return res.send(result[0]);
+});
+});
+
+//ADD/UPDATE CITY OF HERO
+app.put("/herocity/:hid/:cid", function (req, res) {
+    let hero_id = req.params.hid;
+    let city_id = req.params.cid;
+    dbConn.query("UPDATE heroes SET city_id = ? WHERE id = ?" , [city_id,hero_id] , function (err, result) {
+        if (err) throw err;
+    return res.send(result);
+});
+});
+
+//REMOVE CITY FROM HERO
+app.put('/herocity/:id' , function(req,res){
+    var hero_id = req.params.id
+    if (!hero_id) {
+        return res.status(400).send({ error: true, message: 'please provide power' });
+    }
+    dbConn.query("UPDATE heroes SET city_id = NULL WHERE id = ?" , [hero_id] , function(error , result ) {
+        if(error) throw error;
+        return res.send({data : result , message : "removed city from hero"});
+    });
+})
+
 
 
 app.listen(3000, () => {
