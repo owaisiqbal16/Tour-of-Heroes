@@ -28,6 +28,8 @@ export class HeroDetailComponent implements OnInit {
   filteredCostumes : Costume[];
   heroCostume : Costume[];
   cities : City[];
+  filteredCities : City[];
+  filteredCities2 : City[];
   heroCity : City;
 
   filterPower() : void {
@@ -46,9 +48,9 @@ export class HeroDetailComponent implements OnInit {
         this.filteredPowers.push(this.powers[i]);
       }
     }
-    this.filteredPowers.forEach(lol => {
-      console.log(lol)
-    })
+    // this.filteredPowers.forEach(lol => {
+    //   console.log(lol)
+    // })
   }
 
   filterCostumes() : void {
@@ -66,6 +68,24 @@ export class HeroDetailComponent implements OnInit {
     }
   }
 
+  filterCities() : void {
+    this.filteredCities2 = [];
+    console.log(this.cities)
+    console.log(this.filteredCities);
+    for(var i = 0 ; i < this.cities.length ; i++) 
+    {
+      for(var j =0 ; j< this.filteredCities.length ; j++)
+      {
+        if(this.cities[i].name == this.filteredCities[j].name)
+          break;
+      }
+      if(j == this.filteredCities.length)
+      {
+        this.filteredCities2.push(this.cities[i]);
+      }
+    }
+  }
+
   getHero(): void {
     const id = +this.route.snapshot.paramMap.get('id');
     this.heroService.getHero(id)
@@ -76,7 +96,7 @@ export class HeroDetailComponent implements OnInit {
     this.powerService.getPowers()
       .subscribe(powers => {
         this.powers = powers
-        // this.filterPower()
+        this.filterPower()
       });
       
   }
@@ -131,7 +151,17 @@ export class HeroDetailComponent implements OnInit {
 
   getCities(): void {
     this.cityService.getCities()
-      .subscribe(cities => this.cities = cities);
+      .subscribe(cities => {
+        this.cities = cities
+      });
+  }
+
+  getFilteredCities() : void {
+    this.cityService.getFilteredCities()
+      .subscribe( fc => {
+        this.filteredCities = fc;
+        this.filterCities();
+      })
   }
 
   getHeroCity() : void {
@@ -153,18 +183,27 @@ export class HeroDetailComponent implements OnInit {
     this.cityService.addCityToHero(data)
       .subscribe( costume => {
         this.getHeroCity();
+        this.getFilteredCities();
+        this.filterCities();
       });
   }
 
   deleteCityFromHero() : void {
     const id = +this.route.snapshot.paramMap.get('id');
     this.cityService.deleteCityFromHero(id)
-      .subscribe(() => this.getHeroCity());
+      .subscribe(() => {
+        this.getHeroCity()
+        this.getFilteredCities();
+        this.filterCities()
+      });
   }
 
   getCostumes(): void {
     this.costumeService.getCostumes()
-      .subscribe(costumes => this.costumes = costumes);
+      .subscribe(costumes => {
+        this.costumes = costumes
+        this.filterCostumes();
+      });
   }
 
   getHeroCostume() : void {
@@ -215,7 +254,10 @@ export class HeroDetailComponent implements OnInit {
     this.getCostumes();
     this.getHeroCostume();
     this.getCities();
+    this.getFilteredCities();
     this.getHeroCity();
+    this.filterPower();
+    this.filterCostumes();
   }
 
   goBack(): void {

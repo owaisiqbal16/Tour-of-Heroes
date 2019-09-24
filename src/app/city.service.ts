@@ -21,6 +21,13 @@ export class CityService {
         catchError(this.handleError<City[]>('getCities', []))
       );
   };
+  getFilteredCities(): Observable<City[]> {
+    return this.http.get<City[]>('http://localhost:3000/cities/filtered')
+      .pipe(
+        tap(_ => this.log('fetched filtered cities')),
+        catchError(this.handleError<City[]>('getFilteredCities', []))
+      );
+  };
 
   getCity(id: number): Observable<City> {
     const url = `http://localhost:3000/cities/${id}`;

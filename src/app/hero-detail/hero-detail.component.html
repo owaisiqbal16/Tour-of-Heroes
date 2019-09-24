@@ -56,7 +56,7 @@
           Change City
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" *ngFor="let city of cities">
+          <a class="dropdown-item" *ngFor="let city of filteredCities2">
             <span (click)="addCityToHero(city)">{{city.name}}</span>
           </a>
         </div>

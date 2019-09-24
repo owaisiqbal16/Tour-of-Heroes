@@ -322,6 +322,16 @@ app.get('/cities', (req, res) => {
     })
 });
 
+app.get('/cities/filtered' , (req,res) => {
+    dbConn.query("SELECT heroes.city_id as id,cities.name FROM heroes,cities WHERE heroes.city_id = cities.id AND heroes.city_id != 'NULL'" , function(err,result) {
+        if(err){
+            console.log(err)
+        }
+        else
+        res.send(result)
+    })
+})
+
 app.get("/cities/:id", function (req, res) {
     let city_id = req.params.id;
     dbConn.query('SELECT * FROM cities where id=?', city_id, function (err, result) {
