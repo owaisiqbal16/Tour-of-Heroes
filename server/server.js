@@ -164,10 +164,14 @@ app.delete('/powers/:id', function (req, res) {
     if (!id) {
         return res.status(400).send({ error: true, message: 'Please provide power_id' });
     }
-    dbConn.query('DELETE FROM powers WHERE id = ?', [id], function (error, results, fields) {
+    dbConn.query('DELETE FROM heroPowers WHERE power_id = ?', [id], function (error, results, fields) {
         if (error) throw error;
-        return res.send({ error: false, data: results, message: 'power has been deleted successfully.' });
+        dbConn.query('DELETE FROM powers WHERE id = ?', [id], function (error, results, fields) {
+            if (error) throw error;
+            return res.send({ error: false, data: results, message: 'power has been deleted successfully.' });
+        });    
     });
+    
 });
 
 //==================================
